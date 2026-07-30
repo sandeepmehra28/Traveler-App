@@ -15,7 +15,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import java.util.regex.Pattern
 
 class RegisterActivity : AppCompatActivity() {
-    private lateinit var auth: FirebaseAuth
+    private lateinit var auth: FirebaseAuth  // this is for firebase auth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,23 +25,29 @@ class RegisterActivity : AppCompatActivity() {
         val regEmailEd = findViewById<EditText>(R.id.txtRegEmail)
         val regPassEd = findViewById<EditText>(R.id.txtRegPassword)
         val regSubmitBtn = findViewById<Button>(R.id.submitForRegister)
+        // This is for register button
         regSubmitBtn.setOnClickListener {
             val txtEmail = regEmailEd.text.toString()
             val txtPassword = regPassEd.text.toString()
 
             when {
+                //This is for checking internet connection
                 !isConnectedToInternet() -> {
                     Toast.makeText(this, "Please connect your internet", Toast.LENGTH_SHORT).show()
                 }
+                //When all fields are empty
                 TextUtils.isEmpty(txtEmail) || TextUtils.isEmpty(txtPassword) -> {
                     Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show()
                 }
+                //When email is empty
                 TextUtils.isEmpty(txtEmail) -> {
                     Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show()
                 }
+                //When Password filed is empty
                 TextUtils.isEmpty(txtPassword) -> {
                     Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show()
                 }
+                //When email is invalid
                 !isValidEmail(txtEmail) -> {
                     Toast.makeText(this, "Please enter a valid email!", Toast.LENGTH_SHORT).show()
                 }
@@ -52,6 +59,8 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+
+    //This is method used for internet connection check.
     private fun isConnectedToInternet(): Boolean {
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager?
             ?: return false
@@ -64,6 +73,8 @@ class RegisterActivity : AppCompatActivity() {
                 )
     }
 
+
+    //This is register user method
     private fun registerUser(txtEmail: String, txtPassword: String) {
         auth.createUserWithEmailAndPassword(txtEmail, txtPassword)
             .addOnCompleteListener { task ->
@@ -81,7 +92,7 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
     }
-
+    // this method used for
     private fun isValidEmail(txtEmail: String): Boolean {
         val regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
         return Pattern.matches(regex, txtEmail)
